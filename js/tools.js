@@ -36,7 +36,6 @@ function search(build_ID,week_ID,day_ID,time_ID){
     request.onload = function(){
         if (request.status == 200) {/*返回状态为200，即为数据获取成功*/
             let arr = JSON.parse(request.responseText)[week_ID-1][day_ID-1][time_ID-1];
-            console.log(arr.join('').replace(/[^0-9]{6}\)/g,'\t'));
             return arr.join('').replace(/[^0-9]{6}\)/g,'\t');
         }
     }
