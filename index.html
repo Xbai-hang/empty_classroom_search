@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="Search" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body{
+            border: 3 double #987cb9;
+            background-color: pink;
+            overflow: hidden;
+            text-align: center;
+        }
+        table{
+            height: 700px;
+            width: 200px;
+            margin: auto;
+            width: 500px;
+            background-color:#bfa;
+        }
+        #box2{
+            border: 3 solid #987cb9;
+            overflow-x: hidden;
+            overflow-y: scroll;
+            width: 500px;
+            height: 500px;
+            margin:auto;
+        }
+        #box1{
+            height: 150px;
+        }
+    </style>
+</head>
+<body>
+    <div id="box">
+        <div id="box1">
+            <form onsubmit="return false">
+                <h1>欢迎使用CSUFT空课表查询系统</h1>
+                <h3>请选择对应的信息以进行下一步</h3>
+                <select name="check_classroom" id="select_classroom">
+                    <option value="1" selected="selected">树人楼(主教)</option>
+                    <option value="2">德润楼(国际楼)</option>
+                    <option value="3">诚意楼(七教)</option>
+                    <option value="4">博文楼(文综楼)</option>
+                    <option value="5">博明楼(五教)</option>
+                </select>
+                <input type="date" name="datetime" id="date_info" required="required">
+                <select name="check_time">
+                    <option value="1">第一大节(早上)</option>
+                    <option value="2" selected="selected">第二大节(早上)</option>
+                    <option value="3">第三大节(下午)</option>
+                    <option value="4">第四大节(下午)</option>
+                    <option value="5">第五大节(晚上)</option>
+                    <option value="5">第六大节(晚上)</option>
+                </select>
+                <input type="submit" value="查询" id="select">
+                <input type="reset" value="重置" id="reset">
+            </form>
+        </div>
+        <hr style="border:3 double #987cb9" width="80%" color=#987cb9 SIZE=3>
+        <div id="box2">
+            <table>
+                <tr></tr>
+            </table>
+        </div>
+    </div>
+</body>
+<script src="./js/tools.js"></script>
+<script>
+    window.onload = function(){
+        let select = document.getElementById("select");
+        let reset = document.getElementById("reset");
+        select.onclick = function(){
+            let form =  document.getElementsByTagName("select");
+            let time = document.getElementById("date_info");
+            let box2 = document.getElementById("box2");
+            let [year,month,day] = time.value.split('-');
+            let [day_ID,week_ID] = timeChange(Number(year),Number(month),Number(day));
+            if(day_ID == 0) day_ID = 7;
+            let request = new XMLHttpRequest();
+            request.open("get",Build_ID[form[0].value-1]);
+            request.send(null);
+            request.onload = function(){
+                reset.onclick = () =>{
+                    tbody.innerHTML='';
+                }
+                if (request.status == 200) {/*返回状态为200，即为数据获取成功*/
+                    let arr = JSON.parse(request.responseText)[week_ID-1][day_ID-1][form[1].value-1];
+                    let set = arr.join('').replace(/[^0-9]{6}\)/g,' ').split(' ');
+                    let tbody = box2.firstElementChild.firstElementChild;
+                    tbody.innerHTML = ``;
+                    arr.forEach((item)=>{
+                        //创建tr标签
+                        let tr = document.createElement("tr");
+                        //设置tr中的内容
+                        tr.innerHTML += `<tr><td>${item}</td></tr>`
+                        tbody.appendChild(tr);
+                    });    
+                }
+            }
+        }
+    }
+</script>
+</html>
