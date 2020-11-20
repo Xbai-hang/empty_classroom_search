@@ -81,13 +81,13 @@
             request.open("get",Build_ID[form[0].value-1]);
             request.send(null);
             request.onload = function(){
+                let tbody = box2.firstElementChild.firstElementChild;
                 reset.onclick = () =>{
-                    tbody.innerHTML='';
+                    tbody.innerHTML=`<tr></tr>`;
                 }
                 if (request.status == 200) {/*返回状态为200，即为数据获取成功*/
                     let arr = JSON.parse(request.responseText)[week_ID-1][day_ID-1][form[1].value-1];
                     let set = arr.join('').replace(/[^0-9]{6}\)/g,' ').split(' ');
-                    let tbody = box2.firstElementChild.firstElementChild;
                     tbody.innerHTML = ``;
                     arr.forEach((item)=>{
                         //创建tr标签
